@@ -292,125 +292,85 @@ exit;
 
 ## Part 5: Run Database Migrations
 
-Since you don't have terminal access, we'll create a temporary migration script.
+Since you don't have terminal access, we'll use PHP scripts to set up everything.
 
-### Step 1: Create Migration Script
+### Step 1: Setup Storage Structure First
+
+**IMPORTANT: Run this BEFORE migrations!**
+
+1. In File Manager, go to `/home/username/laravel/public/`
+2. Create a new file called `setup-storage.php`
+3. Copy the content from the provided `setup-storage.php` script (see below)
+4. Save the file
+
+**setup-storage.php content:**
+```php
+[Content is in the file church-website/public/setup-storage.php]
+```
+
+5. Visit: `https://yourdomain.com/setup-storage.php`
+6. You should see "Storage structure is ready!"
+7. **DELETE `setup-storage.php` immediately**
+
+### Step 2: Run Database Migrations
 
 1. In File Manager, go to `/home/username/laravel/public/`
 2. Create a new file called `migrate.php`
-3. Add this content:
-
-```php
-<?php
-// IMPORTANT: Delete this file after running migrations!
-
-define('LARAVEL_START', microtime(true));
-
-// Register the Composer autoloader
-require __DIR__.'/../vendor/autoload.php';
-
-// Bootstrap Laravel
-$app = require_once __DIR__.'/../bootstrap/app.php';
-
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-
-// Run migrations
-$status = $kernel->call('migrate', [
-    '--force' => true,
-]);
-
-echo "<h1>Migration Status</h1>";
-echo "<pre>";
-echo "Migrations completed with status: " . $status;
-echo "\n\nIf you see no errors above, migrations were successful!";
-echo "\n\n<strong style='color: red;'>IMPORTANT: Delete this file (migrate.php) immediately for security!</strong>";
-echo "</pre>";
-?>
-```
-
+3. Copy the content from the provided `migrate.php` script
 4. Save the file
 
-### Step 2: Run Migrations
+**migrate.php content:**
+```php
+[Content is in the file church-website/public/migrate.php]
+```
 
-1. Open your browser
-2. Visit: `https://yourdomain.com/migrate.php`
-3. You should see "Migrations completed"
-4. **IMMEDIATELY delete `migrate.php` file for security!**
+5. Visit: `https://yourdomain.com/migrate.php`
+6. You should see "Migrations completed successfully"
+7. If you see errors:
+   - Check database credentials in `.env`
+   - Make sure database exists
+   - Verify database user has privileges
+8. **DELETE `migrate.php` immediately after success**
 
 ### Step 3: Create Storage Link
 
-Create another file called `storage-link.php` in `/public/`:
+1. Create a file called `storage-link.php` in `/public/`
+2. Copy the content from the provided script
 
+**storage-link.php content:**
 ```php
-<?php
-// IMPORTANT: Delete this file after running!
-
-define('LARAVEL_START', microtime(true));
-
-require __DIR__.'/../vendor/autoload.php';
-
-$app = require_once __DIR__.'/../bootstrap/app.php';
-
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-
-$status = $kernel->call('storage:link');
-
-echo "<h1>Storage Link Status</h1>";
-echo "<pre>";
-echo "Storage link created with status: " . $status;
-echo "\n\n<strong style='color: red;'>IMPORTANT: Delete this file (storage-link.php) immediately for security!</strong>";
-echo "</pre>";
-?>
+[Content is in the file church-website/public/storage-link.php]
 ```
 
-Visit `https://yourdomain.com/storage-link.php` and then delete the file.
+3. Visit: `https://yourdomain.com/storage-link.php`
+4. You should see "Storage link created successfully"
+5. **DELETE `storage-link.php` immediately**
+
+**Note:** If symlinks don't work on your hosting, the script will provide a manual workaround.
 
 ---
 
 ## Part 6: Create Admin User
 
-Create a file called `create-admin.php` in `/public/`:
+1. In File Manager, create a file called `create-admin.php` in `/public/`
+2. Copy the content from the provided script
 
+**create-admin.php content:**
 ```php
-<?php
-// IMPORTANT: Delete this file after creating admin!
-
-define('LARAVEL_START', microtime(true));
-
-require __DIR__.'/../vendor/autoload.php';
-
-$app = require_once __DIR__.'/../bootstrap/app.php';
-
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-
-// Create admin user
-$name = 'Admin User';
-$email = 'admin@yourdomain.com'; // Change this
-$password = 'ChangeThisPassword123!'; // Change this
-
-$user = \App\Models\User::create([
-    'name' => $name,
-    'email' => $email,
-    'password' => \Illuminate\Support\Facades\Hash::make($password),
-    'email_verified_at' => now(),
-]);
-
-echo "<h1>Admin User Created</h1>";
-echo "<pre>";
-echo "Name: " . $name . "\n";
-echo "Email: " . $email . "\n";
-echo "Password: " . $password . "\n\n";
-echo "Login at: " . config('app.url') . "/admin\n\n";
-echo "<strong style='color: red;'>IMPORTANT: Delete this file (create-admin.php) immediately for security!</strong>";
-echo "</pre>";
-?>
+[Content is in the file church-website/public/create-admin.php]
 ```
 
 **Before running:**
-1. Edit the file and change the email and password
-2. Visit `https://yourdomain.com/create-admin.php`
-3. Save the credentials shown
-4. **IMMEDIATELY delete the file!**
+1. Edit the file in File Manager
+2. Change these lines:
+   ```php
+   $email = 'your-actual-email@domain.com';  // Your email
+   $password = 'YourStrongPassword123!';      // Your password
+   ```
+3. Save the file
+4. Visit `https://yourdomain.com/create-admin.php`
+5. Save the credentials shown
+6. **IMMEDIATELY delete the file!**
 
 ---
 
