@@ -74,7 +74,7 @@ export default function Layout({ children }) {
                                 href="/live"
                                 className="border-transparent text-red-600 hover:border-red-500 hover:text-red-700 inline-flex items-center px-1 pt-1 border-b-2 text-base font-bold transition-colors"
                             >
-                                🔴 Live
+                                Live
                             </Link>
                         </div>
 
@@ -159,7 +159,7 @@ export default function Layout({ children }) {
                                 href="/live"
                                 className="border-transparent text-red-600 hover:bg-gray-50 hover:border-red-500 hover:text-red-700 block pl-3 pr-4 py-2 border-l-4 text-base font-bold"
                             >
-                                🔴 Live
+                                Live
                             </Link>
                             <Link
                                 href="/give"
