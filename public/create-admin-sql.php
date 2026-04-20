@@ -16,9 +16,9 @@ echo "<h1>Admin User Creation (Direct SQL)</h1>";
 echo "<pre>";
 
 // ⚠️  CHANGE THESE VALUES BEFORE RUNNING!
-$name = 'Admin User';
-$email = 'admin@yourdomain.com';  // ⚠️  CHANGE THIS!
-$password = 'ChangeThisPassword123!';  // ⚠️  CHANGE THIS!
+$name = 'Bishop Dr. John Mark Nuwagaba';
+$email = 'admin@ruralevangelical.org';  // ⚠️  CHANGE THIS TO YOUR ACTUAL EMAIL!
+$password = 'ChangeThisPassword123!';  // ⚠️  CHANGE THIS TO YOUR STRONG PASSWORD!
 
 // Validate
 if ($email === 'admin@yourdomain.com') {
