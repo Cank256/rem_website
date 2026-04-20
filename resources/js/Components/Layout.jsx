@@ -225,8 +225,10 @@ export default function Layout({ children }) {
                             <ul className="space-y-2 text-gray-300">
                                 <li>Rural Evangelical Ministries</li>
                                 <li>Bukoto Evangelical Church</li>
-                                <li>Email: info@rem.org</li>
-                                <li>Phone: Contact us for details</li>
+                                <li>Moyo Close, Mulimira Zone, Bukoto</li>
+                                <li>P.O Box 8926, Kampala, Uganda</li>
+                                <li>Email: info@ruralevangelicalministries.org</li>
+                                <li>Phone: +256 755 532028</li>
                             </ul>
                         </div>
                     </div>
