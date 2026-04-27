@@ -1,25 +1,144 @@
-<IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
+# =============================================================================
+# Church Website — public/.htaccess
+# Apache configuration for a Laravel + Inertia + Filament application
+# =============================================================================
 
+# ── Directory options ─────────────────────────────────────────────────────────
+<IfModule mod_negotiation.c>
+    Options -MultiViews -Indexes
+</IfModule>
+
+Options -Indexes
+
+# ── Block access to sensitive public-directory scripts ────────────────────────
+# These loose PHP utility scripts should be removed after use.
+# Until then, block them from being accessed via the browser.
+<FilesMatch "^(check-admin|clear-cache|create-admin|create-admin-sql|fix-403|fix-permissions|migrate|migrate-simple|migrate-sql|setup-storage|storage-link)\.php$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# ── Security headers ──────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Stop MIME-type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Enable XSS filter in older browsers
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Control referrer information
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Basic Content Security Policy — tighten per your needs
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+    # Remove server signature
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>
+
+# ── HTTPS redirect ────────────────────────────────────────────────────────────
+# Uncomment when SSL is configured on the server
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteCond %{HTTP_HOST} !^localhost [NC]
+#     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# ── WWW redirect ──────────────────────────────────────────────────────────────
+# Uncomment one block depending on your preference (www or non-www)
+
+# Force non-www:
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+#     RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# Force www:
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTP_HOST} !^www\. [NC]
+#     RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# ── Compression ───────────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE text/javascript application/javascript application/x-javascript
+    AddOutputFilterByType DEFLATE application/json application/xml application/xhtml+xml
+    AddOutputFilterByType DEFLATE image/svg+xml font/ttf font/otf font/woff font/woff2
+</IfModule>
+
+# ── Browser caching ───────────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Vite-hashed assets — cache forever (filename changes on rebuild)
+    <FilesMatch "\.[0-9a-f]{8}\.(css|js)$">
+        ExpiresDefault "access plus 1 year"
+        Header append Cache-Control "public, immutable"
+    </FilesMatch>
+
+    # Images
+    ExpiresByType image/jpeg  "access plus 1 month"
+    ExpiresByType image/png   "access plus 1 month"
+    ExpiresByType image/gif   "access plus 1 month"
+    ExpiresByType image/webp  "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon  "access plus 1 year"
+
+    # Fonts
+    ExpiresByType font/ttf    "access plus 1 year"
+    ExpiresByType font/otf    "access plus 1 year"
+    ExpiresByType font/woff   "access plus 1 year"
+    ExpiresByType font/woff2  "access plus 1 year"
+
+    # HTML / data — always revalidate
+    ExpiresByType text/html              "access plus 0 seconds"
+    ExpiresByType application/json       "access plus 0 seconds"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/css               "access plus 1 month"
+</IfModule>
+
+# ── Laravel front-controller routing ─────────────────────────────────────────
+<IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Handle Authorization Header
+    # Pass Authorization header through to PHP (needed for Sanctum / API tokens)
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Handle X-XSRF-Token Header
+    # Pass X-XSRF-Token header through (needed for Inertia CSRF)
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
-    # Redirect Trailing Slashes If Not A Folder...
+    # Remove trailing slashes from non-directory URLs
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # Route everything else through index.php
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# ── PHP settings (shared hosting) ─────────────────────────────────────────────
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+    php_value upload_max_filesize 64M
+    php_value post_max_size 64M
+    php_value max_execution_time 120
+    php_value memory_limit 256M
 </IfModule>
