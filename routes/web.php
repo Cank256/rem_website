@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SermonController;
+use App\Http\Controllers\LiveStreamController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,9 +27,7 @@ Route::get('/events', [EventController::class, 'index'])->name('events');
 
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
 
-Route::get('/live', function () {
-    return Inertia::render('Live');
-})->name('live');
+Route::get('/live', [LiveStreamController::class, 'index'])->name('live');
 
 Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
 

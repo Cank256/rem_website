@@ -1,7 +1,9 @@
 import Layout from '@/Components/Layout';
 import { Head } from '@inertiajs/react';
 
-export default function Live() {
+export default function Live({ liveStream }) {
+    const isLive = liveStream?.is_live;
+
     return (
         <Layout>
             <Head title="Live Stream" />
@@ -17,21 +19,58 @@ export default function Live() {
             {/* Live Stream Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div className="bg-gray-900 rounded-lg overflow-hidden shadow-2xl mb-12">
-                    <div className="aspect-video bg-gray-800 flex items-center justify-center">
-                        <div className="text-center text-white p-8">
-                            <svg className="w-24 h-24 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                            <h2 className="text-2xl font-bold mb-2">Stream Currently Offline</h2>
-                            <p className="text-gray-400 mb-6">
-                                We're not currently live. Check back during our service times or watch previous sermons below.
-                            </p>
-                            <div className="inline-flex items-center px-4 py-2 bg-red-600 rounded-full">
-                                <span className="w-3 h-3 bg-white rounded-full mr-2 animate-pulse"></span>
-                                <span className="text-sm font-medium">Offline</span>
+                    {isLive && liveStream?.embed_url ? (
+                        // Live Stream Active
+                        <div className="relative">
+                            <div className="aspect-video">
+                                <iframe
+                                    src={liveStream.embed_url}
+                                    title={liveStream.title || 'Live Stream'}
+                                    className="w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                            <div className="bg-gray-800 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-white mb-2">
+                                            {liveStream.title || 'Live Stream'}
+                                        </h2>
+                                        {liveStream.description && (
+                                            <p className="text-gray-300">{liveStream.description}</p>
+                                        )}
+                                        {liveStream.stream_started_at && (
+                                            <p className="text-gray-400 text-sm mt-2">
+                                                Started at {liveStream.stream_started_at}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="inline-flex items-center px-4 py-2 bg-red-600 rounded-full">
+                                        <span className="w-3 h-3 bg-white rounded-full mr-2 animate-pulse"></span>
+                                        <span className="text-sm font-medium text-white">LIVE</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        // Stream Offline
+                        <div className="aspect-video bg-gray-800 flex items-center justify-center">
+                            <div className="text-center text-white p-8">
+                                <svg className="w-24 h-24 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                <h2 className="text-2xl font-bold mb-2">Stream Currently Offline</h2>
+                                <p className="text-gray-400 mb-6">
+                                    We're not currently live. Check back during our service times or watch previous sermons.
+                                </p>
+                                <div className="inline-flex items-center px-4 py-2 bg-gray-700 rounded-full">
+                                    <span className="w-3 h-3 bg-gray-500 rounded-full mr-2"></span>
+                                    <span className="text-sm font-medium">Offline</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Service Times */}
