@@ -6,6 +6,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SermonController;
 use App\Http\Controllers\LiveStreamController;
+use App\Http\Controllers\SetupController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,6 +48,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Setup / maintenance panel
+    Route::get('/setup', [SetupController::class, 'index'])->name('setup.index');
+    Route::post('/setup/run', [SetupController::class, 'run'])->name('setup.run');
 });
 
 require __DIR__.'/auth.php';
