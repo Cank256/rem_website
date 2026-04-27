@@ -16,7 +16,10 @@ A modern, responsive church website built with Laravel 11, React 18, Inertia.js,
 - **Sermon Management**: Add sermons with YouTube URLs, audio files, and descriptions
 - **Event Management**: Schedule events with date/time pickers and location
 - **Blog Management**: Rich text editor for creating blog posts
-- **User Management**: Manage admin users and permissions
+- **Gallery Management**: Upload and organize photo galleries
+- **Live Stream Management**: Configure and manage live streaming
+- **User Management**: Comprehensive role-based access control with permissions
+- **Role & Permission Management**: Create custom roles and assign granular permissions
 - **Form Validation**: Built-in validation with helpful error messages
 - **Modern UI**: Clean, intuitive interface
 
@@ -59,6 +62,7 @@ php artisan breeze:install react
 
 ```bash
 composer install
+composer require spatie/laravel-permission
 npm install
 npm install react-player
 ```
@@ -84,7 +88,7 @@ DB_PASSWORD=
 
 ```bash
 php artisan migrate
-php artisan db:seed  # Optional: seed with sample data
+php artisan db:seed --class=RolePermissionSeeder  # Seed roles and permissions
 ```
 
 ### 6. Install Filament Admin Panel
@@ -92,16 +96,18 @@ php artisan db:seed  # Optional: seed with sample data
 ```bash
 composer require filament/filament:"^3.2"
 php artisan filament:install --panels
-php artisan make:filament-user
 ```
 
-### 7. Create Filament Resources
+### 7. Create Admin User
 
 ```bash
-php artisan make:filament-resource Sermon --generate
-php artisan make:filament-resource Event --generate
-php artisan make:filament-resource BlogPost --generate
+bash create-admin.sh
 ```
+
+This will:
+- Prompt for name, email, and password
+- Create user with admin role
+- Assign all permissions
 
 ### 8. Build Assets
 
@@ -118,6 +124,40 @@ php artisan serve
 Visit:
 - **Public Site**: http://localhost:8000
 - **Admin Panel**: http://localhost:8000/admin
+
+## 👥 User Management
+
+This application includes a comprehensive role-based access control system:
+
+### Default Roles
+- **Admin**: Full access to all features including user management
+- **Editor**: Can manage content but not users or roles
+- **User**: Read-only access to content
+
+### Quick Start
+1. Create admin user: `bash create-admin.sh`
+2. Login to admin panel: `/admin`
+3. Navigate to **User Management** to manage users, roles, and permissions
+
+### Documentation
+- **[USER_MANAGEMENT.md](USER_MANAGEMENT.md)**: Complete guide for managing users and roles
+- **[ROLES_QUICK_REFERENCE.md](ROLES_QUICK_REFERENCE.md)**: Quick reference for roles and permissions
+- **[SETUP_SUMMARY.md](SETUP_SUMMARY.md)**: Setup summary and quick start guide
+
+### Common Tasks
+```bash
+# Create admin user
+bash create-admin.sh
+
+# Update user password
+bash create-admin.sh --update
+
+# List all users
+bash create-admin.sh --list
+
+# Clear permission cache
+php artisan permission:cache-reset
+```
 
 ## 📁 Project Structure
 
@@ -258,6 +298,10 @@ See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed deployment instructi
 - Keep dependencies updated: `composer update`
 - Enable HTTPS/SSL certificate
 - Never commit `.env` file to version control
+- **Role-Based Access Control**: Only admins can manage users and roles
+- **Permission System**: Granular control over what users can do
+- **Password Hashing**: All passwords are securely hashed
+- **Email Verification**: Optional email verification for new users
 
 ## 🧪 Testing
 

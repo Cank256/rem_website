@@ -305,8 +305,14 @@ run_php "
         'email'             => '$ADMIN_EMAIL',
         'password'          => \Illuminate\Support\Facades\Hash::make('$ADMIN_PASSWORD'),
         'email_verified_at' => now(),
+        'role'              => 'admin',
     ]);
-    echo \"Created user ID: {\$user->id}\n\";
+    
+    // Assign admin role using Spatie Permission
+    \$adminRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    \$user->assignRole(\$adminRole);
+    
+    echo \"Created user ID: {\$user->id} with admin role\n\";
 "
 
 # ── Success summary ───────────────────────────────────────────────────────────
