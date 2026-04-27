@@ -1,454 +1,270 @@
-# 📋 Deployment Checklist - Church Website
+# cPanel Deployment Checklist
 
-Use this checklist to ensure a smooth deployment to cPanel hosting.
-
----
-
-## 🔍 PRE-DEPLOYMENT CHECKLIST
-
-### Local Development Complete
-- [ ] All features tested locally
-- [ ] Admin panel working correctly
-- [ ] Frontend displays properly
-- [ ] Mobile responsiveness verified
-- [ ] All forms validated
-- [ ] Media players (YouTube/Audio) working
-- [ ] Navigation links functional
-- [ ] No console errors in browser
-
-### Content Ready
-- [ ] Church name updated in code
-- [ ] Logo/branding customized (if applicable)
-- [ ] Sample content removed or replaced
-- [ ] Real sermons added
-- [ ] Real events added
-- [ ] Blog posts created
-- [ ] Contact information updated in footer
-
-### Code Optimization
-- [ ] Run: `composer install --no-dev --optimize-autoloader`
-- [ ] Run: `npm run build`
-- [ ] Run: `php artisan config:cache`
-- [ ] Run: `php artisan route:cache`
-- [ ] Run: `php artisan view:cache`
-- [ ] Remove development dependencies
-- [ ] Check for debug statements in code
-
-### Environment Configuration
-- [ ] `.env.example` updated with all required variables
-- [ ] `.env` file ready for production (don't upload yet)
-- [ ] `APP_ENV=production` set
-- [ ] `APP_DEBUG=false` set
-- [ ] `APP_URL` set to production domain
-- [ ] Database credentials prepared
-- [ ] Strong `APP_KEY` generated
-
-### Security Review
-- [ ] All passwords are strong
-- [ ] `.env` not in version control
-- [ ] Sensitive data removed from code
-- [ ] CSRF protection enabled
-- [ ] SQL injection protection verified
-- [ ] XSS protection verified
-- [ ] File upload validation (if applicable)
-
-### Files Prepared
-- [ ] Create ZIP of project (exclude node_modules, .git)
-- [ ] Backup current site (if updating)
-- [ ] Database export ready (if migrating)
-- [ ] Documentation files included
+Quick checklist for deploying to shared hosting without terminal access.
 
 ---
 
-## 🚀 CPANEL SETUP CHECKLIST
+## Before You Start
 
-### cPanel Access
-- [ ] cPanel login credentials obtained
-- [ ] SSH access available (optional but recommended)
-- [ ] FTP credentials available (alternative)
-
-### PHP Configuration
-- [ ] PHP version set to 8.2 or higher
-- [ ] Required PHP extensions enabled:
-  - [ ] mbstring
-  - [ ] xml
-  - [ ] pdo
-  - [ ] pdo_mysql
-  - [ ] openssl
-  - [ ] tokenizer
-  - [ ] json
-  - [ ] bcmath
-  - [ ] ctype
-  - [ ] fileinfo
-  - [ ] curl
-
-### Database Setup
-- [ ] MySQL database created
-- [ ] Database user created
-- [ ] User added to database with ALL PRIVILEGES
-- [ ] Database credentials noted:
-  - Database name: _______________
-  - Username: _______________
-  - Password: _______________
-  - Host: _______________ (usually localhost)
-
-### SSL Certificate
-- [ ] SSL certificate installed (Let's Encrypt recommended)
-- [ ] HTTPS working
-- [ ] HTTP to HTTPS redirect configured
+- [ ] PHP 8.2+ available on hosting
+- [ ] MySQL database access
+- [ ] cPanel login credentials
+- [ ] Domain name configured
 
 ---
 
-## 📤 FILE UPLOAD CHECKLIST
+## Local Preparation
 
-### Upload Structure
-- [ ] Upload entire project to `/home/username/church-website/`
-- [ ] Verify all files uploaded successfully
-- [ ] Check file count matches local
-
-### Public Directory Setup
-Choose one method:
-
-**Method A: Symlink (Recommended)**
-- [ ] Delete all files in `public_html/`
-- [ ] Create symlink: `ln -s /home/username/church-website/public/* /home/username/public_html/`
-- [ ] Verify symlink working
-
-**Method B: Copy & Update**
-- [ ] Copy contents of `church-website/public/` to `public_html/`
-- [ ] Update `public_html/index.php` paths
-- [ ] Verify paths point to correct directories
-
-### File Permissions
-- [ ] Set storage permissions: `chmod -R 755 storage`
-- [ ] Set cache permissions: `chmod -R 755 bootstrap/cache`
-- [ ] Set ownership: `chown -R username:username storage bootstrap/cache`
-- [ ] Verify web server can write to storage
+- [ ] Run `composer install --optimize-autoloader --no-dev`
+- [ ] Run `npm install && npm run build`
+- [ ] Generate APP_KEY: `php artisan key:generate --show`
+- [ ] Create `.env.production` with production settings
+- [ ] Create ZIP file (exclude node_modules, .git, tests)
 
 ---
 
-## ⚙️ CONFIGURATION CHECKLIST
+## cPanel Setup
 
-### Environment File
-- [ ] Upload `.env` file to `/home/username/church-website/`
-- [ ] Update `.env` with production values:
-  ```env
-  APP_NAME="Your Church Name"
-  APP_ENV=production
-  APP_DEBUG=false
-  APP_URL=https://yourdomain.com
-  
-  DB_CONNECTION=mysql
-  DB_HOST=localhost
-  DB_PORT=3306
-  DB_DATABASE=your_cpanel_database
-  DB_USERNAME=your_cpanel_user
-  DB_PASSWORD=your_cpanel_password
-  ```
-- [ ] Verify `.env` file permissions: `chmod 644 .env`
-
-### Application Key
-- [ ] Generate key: `php artisan key:generate`
-- [ ] Verify `APP_KEY` in `.env` is set
-
-### Database Migration
-Choose one method:
-
-**Method A: Import SQL**
-- [ ] Go to phpMyAdmin
-- [ ] Select database
-- [ ] Import SQL dump
-- [ ] Verify all tables imported
-
-**Method B: Run Migrations**
-- [ ] SSH into server
-- [ ] Navigate to project: `cd /home/username/church-website`
-- [ ] Run: `php artisan migrate --force`
-- [ ] Verify tables created
-
-### Create Admin User
-- [ ] Run: `php artisan make:filament-user`
-- [ ] Enter admin credentials
-- [ ] Note credentials securely
+- [ ] Create MySQL database
+- [ ] Create database user
+- [ ] Grant ALL PRIVILEGES to user
+- [ ] Save database credentials
+- [ ] Set PHP version to 8.2+
+- [ ] Enable required PHP extensions
 
 ---
 
-## 🧪 TESTING CHECKLIST
+## File Upload
 
-### Basic Functionality
-- [ ] Visit homepage: `https://yourdomain.com`
-- [ ] Homepage loads without errors
-- [ ] Navigation menu works
-- [ ] Footer displays correctly
-- [ ] Mobile menu works
-
-### Admin Panel
-- [ ] Visit: `https://yourdomain.com/admin`
-- [ ] Admin login page loads
-- [ ] Can login with admin credentials
-- [ ] Dashboard displays
-- [ ] Can view sermons list
-- [ ] Can create new sermon
-- [ ] Can edit sermon
-- [ ] Can delete sermon
-- [ ] Same tests for Events
-- [ ] Same tests for Blog Posts
-
-### Frontend Features
-- [ ] Recent sermons display on homepage
-- [ ] Upcoming events display on homepage
-- [ ] YouTube player works
-- [ ] Audio player works (if applicable)
-- [ ] All links work
-- [ ] Images load correctly
-- [ ] Forms work (if applicable)
-
-### Mobile Testing
-- [ ] Test on mobile device or emulator
-- [ ] Navigation menu works
-- [ ] Content displays properly
-- [ ] Touch interactions work
-- [ ] Media players work on mobile
-
-### Browser Testing
-- [ ] Test in Chrome
-- [ ] Test in Firefox
-- [ ] Test in Safari
-- [ ] Test in Edge
-- [ ] No console errors
-
-### Performance
-- [ ] Page load time acceptable (< 3 seconds)
-- [ ] Images optimized
-- [ ] No 404 errors
-- [ ] No broken links
+- [ ] Upload ZIP to server
+- [ ] Extract files to `/home/username/laravel/`
+- [ ] Delete ZIP file
+- [ ] Rename `.env.production` to `.env`
+- [ ] Update `.env` with database credentials
 
 ---
 
-## 🔧 POST-DEPLOYMENT CHECKLIST
+## Permissions
 
-### Optimization
-- [ ] Clear all caches: `php artisan optimize:clear`
-- [ ] Cache config: `php artisan config:cache`
-- [ ] Cache routes: `php artisan route:cache`
-- [ ] Cache views: `php artisan view:cache`
-- [ ] Optimize autoloader: `composer dump-autoload --optimize`
-
-### Security Hardening
-- [ ] Verify `APP_DEBUG=false`
-- [ ] Verify `.env` not publicly accessible
-- [ ] Test that `/storage` is not publicly accessible
-- [ ] Verify HTTPS working
-- [ ] Test admin panel security
-- [ ] Change default admin password (if used)
-
-### Monitoring Setup
-- [ ] Set up error monitoring (optional)
-- [ ] Configure log rotation
-- [ ] Set up backup schedule
-- [ ] Configure uptime monitoring (optional)
-- [ ] Set up analytics (optional)
-
-### Documentation
-- [ ] Document server credentials (securely)
-- [ ] Document database credentials (securely)
-- [ ] Document admin credentials (securely)
-- [ ] Note deployment date
-- [ ] Create maintenance log
+- [ ] Set `storage/` to 755 (recursive)
+- [ ] Set `bootstrap/cache/` to 755 (recursive)
+- [ ] Set files in `storage/` to 644
+- [ ] Set files in `bootstrap/cache/` to 644
 
 ---
 
-## 📊 VERIFICATION CHECKLIST
+## Domain Configuration
 
-### URLs to Test
-- [ ] `https://yourdomain.com` - Homepage
-- [ ] `https://yourdomain.com/admin` - Admin panel
-- [ ] `https://yourdomain.com/login` - User login
-- [ ] `https://yourdomain.com/register` - Registration
-- [ ] Check all navigation links
-
-### Error Checking
-- [ ] Check `storage/logs/laravel.log` for errors
-- [ ] Check cPanel error logs
-- [ ] Check browser console for JavaScript errors
-- [ ] Verify no 500 errors
-- [ ] Verify no 404 errors
-
-### Database Verification
-- [ ] Login to phpMyAdmin
-- [ ] Verify all tables exist:
-  - [ ] users
-  - [ ] sermons
-  - [ ] events
-  - [ ] blog_posts
-  - [ ] migrations
-  - [ ] cache
-  - [ ] jobs
-  - [ ] sessions
-- [ ] Verify data exists in tables
+Choose one:
+- [ ] **Option A:** Redirect main domain to `/laravel/public/`
+- [ ] **Option B:** Create subdomain pointing to `/laravel/public/`
+- [ ] **Option C:** Add addon domain pointing to `/laravel/public/`
 
 ---
 
-## 🔄 ROLLBACK PLAN (If Something Goes Wrong)
+## Database & Setup
 
-### Immediate Actions
-- [ ] Enable maintenance mode: `php artisan down`
-- [ ] Check error logs: `storage/logs/laravel.log`
-- [ ] Check cPanel error logs
-
-### Common Fixes
-- [ ] Clear all caches: `php artisan optimize:clear`
-- [ ] Fix file permissions: `chmod -R 755 storage bootstrap/cache`
-- [ ] Verify `.env` configuration
-- [ ] Check database connection
-- [ ] Verify `public_html/index.php` paths
-
-### Full Rollback
-- [ ] Restore previous site backup
-- [ ] Restore database backup
-- [ ] Verify old site working
-- [ ] Investigate issues before retry
+- [ ] Create `migrate.php` in `/public/`
+- [ ] Visit `yourdomain.com/migrate.php`
+- [ ] Verify migrations completed
+- [ ] **DELETE `migrate.php` immediately**
+- [ ] Create `storage-link.php` in `/public/`
+- [ ] Visit `yourdomain.com/storage-link.php`
+- [ ] **DELETE `storage-link.php` immediately**
 
 ---
 
-## 📝 POST-LAUNCH TASKS
+## Admin User
 
-### Week 1
-- [ ] Monitor error logs daily
-- [ ] Check site performance
-- [ ] Verify all features working
-- [ ] Collect user feedback
-- [ ] Fix any reported issues
-
-### Week 2-4
-- [ ] Monitor error logs weekly
-- [ ] Check analytics (if configured)
-- [ ] Update content regularly
-- [ ] Backup database weekly
-- [ ] Plan future enhancements
-
-### Monthly
-- [ ] Update dependencies: `composer update`
-- [ ] Update npm packages: `npm update`
-- [ ] Security audit
-- [ ] Performance review
-- [ ] Backup verification
+- [ ] Create `create-admin.php` in `/public/`
+- [ ] Edit email and password in the file
+- [ ] Visit `yourdomain.com/create-admin.php`
+- [ ] Save admin credentials
+- [ ] **DELETE `create-admin.php` immediately**
 
 ---
 
-## 🆘 TROUBLESHOOTING GUIDE
+## Security
 
-### Issue: 500 Internal Server Error
-**Check:**
-- [ ] `.env` file exists and is configured
-- [ ] File permissions: `chmod -R 755 storage bootstrap/cache`
-- [ ] `storage/logs/laravel.log` for specific error
-- [ ] PHP version is 8.2+
-- [ ] All required PHP extensions enabled
+- [ ] Set `APP_DEBUG=false` in `.env`
+- [ ] Verify `.env` is not accessible via browser
+- [ ] Add `.htaccess` to protect `.env`
+- [ ] Enable HTTPS/SSL
+- [ ] Update `APP_URL` to use https://
+- [ ] Delete all temporary PHP scripts
 
-**Fix:**
-```bash
-php artisan optimize:clear
-chmod -R 755 storage bootstrap/cache
+---
+
+## Testing
+
+- [ ] Visit homepage - loads correctly
+- [ ] All navigation links work
+- [ ] Visit `/admin` - login page appears
+- [ ] Login with admin credentials
+- [ ] Upload test image in Gallery
+- [ ] Create test event with image
+- [ ] Create test sermon
+- [ ] Visit `/gallery` - images display
+- [ ] Visit `/events` - events display
+- [ ] Visit `/sermons` - sermons display
+- [ ] Click "Learn More" on event - detail page works
+- [ ] Test "Load More" on sermons
+- [ ] Test "Load More" on events
+- [ ] Check mobile responsiveness
+- [ ] Test all forms work
+
+---
+
+## Post-Deployment
+
+- [ ] Backup database (phpMyAdmin > Export)
+- [ ] Backup files (compress laravel folder)
+- [ ] Document admin credentials securely
+- [ ] Setup email (if needed)
+- [ ] Configure cron jobs (if needed)
+- [ ] Add content (sermons, events, galleries)
+- [ ] Test with real users
+
+---
+
+## Troubleshooting Quick Fixes
+
+**500 Error:**
+- Check `.env` exists and has correct DB credentials
+- Check folder permissions
+- Temporarily enable `APP_DEBUG=true`
+
+**Database Error:**
+- Verify DB credentials in `.env`
+- Try `DB_HOST=localhost` or `127.0.0.1`
+- Check user has privileges
+
+**Images Not Showing:**
+- Re-run storage link script
+- Check `public/storage` exists
+- Re-upload images
+
+**CSS/JS Not Loading:**
+- Verify `public/build` folder exists
+- Check `.htaccess` in public folder
+- Clear browser cache
+
+---
+
+## Important Files Location
+
+```
+/home/username/laravel/
+├── .env                    # Configuration
+├── storage/logs/           # Error logs
+├── public/                 # Web root
+│   ├── .htaccess          # URL rewriting
+│   └── index.php          # Entry point
+└── bootstrap/cache/        # Cache files
 ```
 
-### Issue: Assets Not Loading (CSS/JS)
-**Check:**
-- [ ] `public/build` directory exists
-- [ ] `APP_URL` in `.env` matches domain
-- [ ] HTTPS is working
-- [ ] No mixed content warnings
+---
 
-**Fix:**
+## Quick Commands (If Terminal Available)
+
+If your host adds terminal later:
+
 ```bash
-npm run build
-php artisan config:clear
-```
-
-### Issue: Database Connection Error
-**Check:**
-- [ ] Database credentials in `.env`
-- [ ] Database exists in cPanel
-- [ ] User has privileges
-- [ ] Host is correct (usually `localhost`)
-
-**Fix:**
-- Verify credentials in cPanel
-- Test connection in phpMyAdmin
-- Update `.env` with correct values
-
-### Issue: Admin Panel Not Accessible
-**Check:**
-- [ ] Filament installed: `composer show filament/filament`
-- [ ] Routes cached: `php artisan route:clear`
-- [ ] Config cached: `php artisan config:clear`
-
-**Fix:**
-```bash
+# Clear caches
+php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
-composer dump-autoload
+php artisan view:clear
+
+# Optimize
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Run migrations
+php artisan migrate --force
+
+# Create storage link
+php artisan storage:link
+
+# Create admin user
+php artisan make:filament-user
 ```
 
-### Issue: Blank Page
-**Check:**
-- [ ] PHP error logs
-- [ ] Laravel logs: `storage/logs/laravel.log`
-- [ ] Browser console for errors
+---
 
-**Fix:**
-- Enable error display temporarily to see error
-- Check file permissions
-- Clear all caches
+## Support Contacts
+
+- **Hosting Support:** Contact for server issues
+- **Database Issues:** Check cPanel > MySQL Databases
+- **Domain Issues:** Check cPanel > Domains
+- **SSL Issues:** Check cPanel > SSL/TLS Status
 
 ---
 
-## ✅ FINAL SIGN-OFF
+## Backup Schedule
 
-### Deployment Complete
-- [ ] All checklist items completed
-- [ ] Site fully functional
-- [ ] Admin panel working
-- [ ] No critical errors
-- [ ] Performance acceptable
-- [ ] Security verified
-- [ ] Documentation updated
-- [ ] Stakeholders notified
-
-### Deployment Details
-- **Deployment Date**: _______________
-- **Deployed By**: _______________
-- **Domain**: _______________
-- **Server**: _______________
-- **PHP Version**: _______________
-- **Laravel Version**: 11.x
-- **Database**: _______________
-
-### Sign-Off
-- **Developer**: _______________ Date: _______________
-- **Client/Pastor**: _______________ Date: _______________
+Recommended:
+- **Daily:** Database backup (automated if possible)
+- **Weekly:** Full file backup
+- **Before Updates:** Both database and files
 
 ---
 
-## 📞 SUPPORT CONTACTS
+## Update Procedure
 
-### Technical Support
-- **Hosting Provider**: _______________
-- **Support Email**: _______________
-- **Support Phone**: _______________
-
-### Developer Contact
-- **Name**: _______________
-- **Email**: _______________
-- **Phone**: _______________
+1. Make changes locally
+2. Test locally
+3. Run `npm run build`
+4. Run `composer install --no-dev`
+5. Create backup of live site
+6. Upload changed files only
+7. Clear caches (delete cache files)
+8. Test live site
 
 ---
 
-**Congratulations on your deployment! 🎉**
+## Emergency Rollback
 
-Keep this checklist for future reference and updates.
+If something breaks:
+1. Restore database from backup (phpMyAdmin > Import)
+2. Restore files from backup (extract ZIP)
+3. Clear all caches
+4. Test site
 
-For detailed instructions, refer to:
-- DEPLOYMENT_GUIDE.md
-- README.md
-- COMMANDS_REFERENCE.md
+---
+
+## Success Indicators
+
+✅ Homepage loads without errors
+✅ Admin panel accessible at `/admin`
+✅ Can login to admin
+✅ Can upload images
+✅ Can create events and sermons
+✅ Public pages display content
+✅ HTTPS working
+✅ Mobile responsive
+✅ No console errors
+
+---
+
+## Final Security Check
+
+- [ ] All temporary scripts deleted
+- [ ] `APP_DEBUG=false`
+- [ ] `.env` not accessible
+- [ ] Strong passwords used
+- [ ] HTTPS enabled
+- [ ] Backups created
+- [ ] Admin credentials documented securely
+
+---
+
+**Deployment Complete!** 🎉
+
+Your Rural Evangelical Ministries website is now live!
+
+---
+
+**Document Version:** 1.0
+**Last Updated:** April 20, 2026
