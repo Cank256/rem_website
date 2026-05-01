@@ -17,12 +17,15 @@ class Sermon extends Model
         'speaker_name',
         'date_preached',
         'youtube_url',
+        'youtube_video_id',
+        'imported_from_youtube',
         'audio_url',
         'description',
     ];
 
     protected $casts = [
         'date_preached' => 'date',
+        'imported_from_youtube' => 'boolean',
     ];
 
     protected static function boot()

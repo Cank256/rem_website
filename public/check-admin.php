@@ -48,6 +48,7 @@ echo "APP_DEBUG: $appDebug\n";
 echo "PHP Version: " . phpversion() . "\n\n";
 
 // Database connection
+$dbConnection = getenv('DB_CONNECTION') ?: 'sqlite';
 $host = getenv('DB_HOST') ?: 'localhost';
 $database = getenv('DB_DATABASE');
 $username = getenv('DB_USERNAME');
@@ -58,14 +59,31 @@ echo "🔌 DATABASE CHECK\n";
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
 
 try {
-    $pdo = new PDO(
-        "mysql:host=$host;dbname=$database;charset=utf8mb4",
-        $username,
-        $dbPassword,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
-    echo "✅ Database connected\n";
-    echo "   Database: $database\n\n";
+    if ($dbConnection === 'sqlite') {
+        // For SQLite, use the database path
+        $dbPath = $database ?: $basePath . '/database/database.sqlite';
+        if (!file_exists($dbPath)) {
+            throw new Exception("SQLite database file not found at: $dbPath");
+        }
+        $pdo = new PDO(
+            "sqlite:$dbPath",
+            null,
+            null,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+        echo "✅ Database connected (SQLite)\n";
+        echo "   Database file: $dbPath\n\n";
+    } else {
+        // For MySQL/other databases
+        $pdo = new PDO(
+            "mysql:host=$host;dbname=$database;charset=utf8mb4",
+            $username,
+            $dbPassword,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+        echo "✅ Database connected (MySQL)\n";
+        echo "   Database: $database\n\n";
+    }
     
     // Check users table
     $stmt = $pdo->query("SELECT COUNT(*) as count FROM users");
