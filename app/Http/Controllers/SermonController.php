@@ -19,4 +19,11 @@ class SermonController extends Controller
             'sermons' => $sermons
         ]);
     }
+
+    public function show(Sermon $sermon)
+    {
+        return Inertia::render('SermonDetail', [
+            'sermon' => $sermon
+        ]);
+    }
 }

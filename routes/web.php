@@ -24,6 +24,8 @@ Route::get('/ministries', function () {
 
 Route::get('/sermons', [SermonController::class, 'index'])->name('sermons');
 
+Route::get('/sermons/{sermon:slug}', [SermonController::class, 'show'])->name('sermons.show');
+
 Route::get('/events', [EventController::class, 'index'])->name('events');
 
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
