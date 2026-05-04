@@ -53,7 +53,7 @@ class UserResource extends Resource
                             ->password()
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'edit')
+                            ->required(fn (string $context): bool => $context === 'create')
                             ->maxLength(255)
                             ->revealable()
                             ->helperText(fn (string $context): ?string => $context === 'edit' ? 'Leave blank to keep current password' : null),
@@ -61,12 +61,12 @@ class UserResource extends Resource
                             ->password()
                             ->same('password')
                             ->dehydrated(false)
-                            ->required(fn (string $context): bool => $context === 'edit' && filled(fn ($get) => $get('password')))
+                            ->requiredWith('password')
                             ->maxLength(255)
-                            ->revealable(),
+                            ->revealable()
+                            ->helperText(fn (string $context): ?string => $context === 'edit' ? 'Required only if changing password' : null),
                     ])
-                    ->columns(2)
-                    ->hidden(fn (string $context): bool => $context === 'create'),
+                    ->columns(2),
             ]);
     }
 
@@ -104,6 +104,7 @@ class UserResource extends Resource
                     ->preload(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -127,6 +128,7 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
+            'view' => Pages\ViewUser::route('/{record}'),
         ];
     }
 
