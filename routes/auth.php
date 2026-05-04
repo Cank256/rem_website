@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\FilamentPasswordResetController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -24,11 +25,11 @@ Route::middleware('guest')->group(function () {
     Route::get('forgot-password', function () {
         return redirect('/admin/password-reset/request');
     })->name('password.request');
-
-    Route::get('reset-password/{token}', function ($token) {
-        return redirect('/admin/password-reset/reset?token=' . $token . '&email=' . request('email'));
-    })->name('password.reset');
 });
+
+// Password reset route - accessible to guests (will auto-login)
+Route::get('reset-password/{token}', [FilamentPasswordResetController::class, 'handleResetLink'])
+    ->name('password.reset');
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
