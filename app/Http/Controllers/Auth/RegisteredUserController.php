@@ -51,6 +51,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect('/admin');
+        // Redirect to home page after registration
+        return redirect()->route('home');
     }
 }
