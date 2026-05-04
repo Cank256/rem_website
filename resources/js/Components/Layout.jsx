@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';
+import CookieConsent from './CookieConsent';
 
 export default function Layout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -218,6 +219,16 @@ export default function Layout({ children }) {
                                         Give
                                     </Link>
                                 </li>
+                                <li>
+                                    <Link href="/privacy-policy" className="text-gray-300 hover:text-white">
+                                        Privacy Policy
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/terms-of-use" className="text-gray-300 hover:text-white">
+                                        Terms of Use
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
                         <div>
@@ -237,6 +248,9 @@ export default function Layout({ children }) {
                     </div>
                 </div>
             </footer>
+
+            {/* Cookie Consent Banner */}
+            <CookieConsent />
         </div>
     );
 }

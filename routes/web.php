@@ -7,6 +7,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\SermonController;
 use App\Http\Controllers\LiveStreamController;
 use App\Http\Controllers\SetupController;
+use App\Http\Controllers\PrivacyPolicyController;
+use App\Http\Controllers\TermsOfUseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,6 +43,10 @@ Route::get('/contact', function () {
 Route::get('/give', function () {
     return Inertia::render('Give');
 })->name('give');
+
+Route::get('/privacy-policy', [PrivacyPolicyController::class, 'index'])->name('privacy-policy');
+
+Route::get('/terms-of-use', [TermsOfUseController::class, 'index'])->name('terms-of-use');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
