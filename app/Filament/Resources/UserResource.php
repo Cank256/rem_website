@@ -53,20 +53,15 @@ class UserResource extends Resource
                             ->password()
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'create')
                             ->maxLength(255)
                             ->revealable()
-                            ->helperText(fn (string $context): ?string => $context === 'edit' ? 'Leave blank to keep current password' : null),
-                        Forms\Components\TextInput::make('password_confirmation')
-                            ->password()
-                            ->same('password')
-                            ->dehydrated(false)
-                            ->requiredWith('password')
-                            ->maxLength(255)
-                            ->revealable()
-                            ->helperText(fn (string $context): ?string => $context === 'edit' ? 'Required only if changing password' : null),
+                            ->helperText(fn (string $context): ?string => 
+                                $context === 'create' 
+                                    ? 'Leave blank to generate a random password and send reset link' 
+                                    : 'Leave blank to keep current password'
+                            ),
                     ])
-                    ->columns(2),
+                    ->columns(1),
             ]);
     }
 
