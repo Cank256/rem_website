@@ -23,6 +23,13 @@ A modern, responsive church website built with Laravel 11, React 18, Inertia.js,
 - **Form Validation**: Built-in validation with helpful error messages
 - **Modern UI**: Clean, intuitive interface
 
+### Email Integration
+- **Resend.com API**: Professional email delivery service
+- **Welcome Emails**: Automatic welcome emails for new user registrations
+- **Password Reset**: Secure password reset emails with reset links
+- **Queued Emails**: Optional queue support for better performance
+- **Email Monitoring**: Track delivery status via Resend dashboard
+
 ## 🛠️ Tech Stack
 
 - **Backend**: Laravel 11 (PHP 8.2+)
@@ -83,6 +90,16 @@ DB_DATABASE=church_website
 DB_USERNAME=root
 DB_PASSWORD=
 ```
+
+**Email Configuration (Resend.com)**:
+```env
+MAIL_MAILER=resend
+MAIL_FROM_ADDRESS="noreply@yourdomain.com"
+MAIL_FROM_NAME="Your Church Name"
+RESEND_API_KEY=your_resend_api_key_here
+```
+
+See [RESEND_QUICK_START.md](RESEND_QUICK_START.md) for email setup instructions.
 
 ### 5. Database Setup
 
@@ -157,6 +174,40 @@ bash create-admin.sh --list
 
 # Clear permission cache
 php artisan permission:cache-reset
+```
+
+## 📧 Email Configuration
+
+This application uses Resend.com for reliable email delivery:
+
+### Features
+- Welcome emails for new user registrations
+- Password reset emails with secure reset links
+- Professional email templates
+- Delivery tracking and monitoring
+
+### Quick Setup
+1. Sign up at [resend.com](https://resend.com)
+2. Get your API key
+3. Update `.env`:
+   ```env
+   MAIL_MAILER=resend
+   MAIL_FROM_ADDRESS="noreply@yourdomain.com"
+   RESEND_API_KEY=your_api_key_here
+   ```
+4. Test: `php artisan resend:test your-email@example.com`
+
+### Documentation
+- **[RESEND_QUICK_START.md](RESEND_QUICK_START.md)**: Quick setup guide (5 minutes)
+- **[RESEND_SETUP.md](RESEND_SETUP.md)**: Complete setup and customization guide
+
+### Testing
+```bash
+# Send test email
+php artisan resend:test your-email@example.com
+
+# Clear configuration cache
+php artisan config:clear
 ```
 
 ## 📁 Project Structure
