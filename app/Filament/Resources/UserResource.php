@@ -39,20 +39,12 @@ class UserResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
-                        Forms\Components\Select::make('role')
-                            ->options([
-                                'admin' => 'Admin',
-                                'editor' => 'Editor',
-                                'user' => 'User',
-                            ])
-                            ->default('user')
-                            ->required()
-                            ->native(false),
                         Forms\Components\Select::make('roles')
                             ->multiple()
                             ->relationship('roles', 'name')
                             ->preload()
-                            ->searchable(),
+                            ->searchable()
+                            ->required(),
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Password')
@@ -61,18 +53,20 @@ class UserResource extends Resource
                             ->password()
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'create')
+                            ->required(fn (string $context): bool => $context === 'edit')
                             ->maxLength(255)
-                            ->revealable(),
+                            ->revealable()
+                            ->helperText(fn (string $context): ?string => $context === 'edit' ? 'Leave blank to keep current password' : null),
                         Forms\Components\TextInput::make('password_confirmation')
                             ->password()
                             ->same('password')
                             ->dehydrated(false)
-                            ->required(fn (string $context): bool => $context === 'create')
+                            ->required(fn (string $context): bool => $context === 'edit' && filled(fn ($get) => $get('password')))
                             ->maxLength(255)
                             ->revealable(),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->hidden(fn (string $context): bool => $context === 'create'),
             ]);
     }
 
@@ -87,16 +81,6 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->copyable(),
-                Tables\Columns\TextColumn::make('role')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'admin' => 'danger',
-                        'editor' => 'warning',
-                        'user' => 'success',
-                        default => 'gray',
-                    })
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->searchable(),
@@ -114,12 +98,10 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('role')
-                    ->options([
-                        'admin' => 'Admin',
-                        'editor' => 'Editor',
-                        'user' => 'User',
-                    ]),
+                Tables\Filters\SelectFilter::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
