@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\FilamentPasswordResetController;
+use App\Http\Controllers\Auth\SetPasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -30,6 +31,12 @@ Route::middleware('guest')->group(function () {
 // Password reset route - accessible to guests (will auto-login)
 Route::get('reset-password/{token}', [FilamentPasswordResetController::class, 'handleResetLink'])
     ->name('password.reset');
+
+// Set password routes
+Route::get('set-password', [SetPasswordController::class, 'show'])
+    ->name('password.set');
+Route::post('set-password', [SetPasswordController::class, 'store'])
+    ->name('password.set.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)

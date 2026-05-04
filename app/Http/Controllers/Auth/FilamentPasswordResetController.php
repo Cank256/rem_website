@@ -14,7 +14,7 @@ class FilamentPasswordResetController extends Controller
 {
     /**
      * Handle the password reset link click.
-     * Validates the token, logs in the user, and redirects to Filament password reset page.
+     * Validates the token, logs in the user, and redirects to custom password reset page.
      */
     public function handleResetLink(Request $request, $token)
     {
@@ -56,14 +56,10 @@ class FilamentPasswordResetController extends Controller
         // Token is valid - log in the user
         Auth::login($user);
 
-        // Store the token in session for the password reset page
-        session([
-            'password_reset_token' => $token,
-            'password_reset_email' => $email,
+        // Redirect to our custom set password page (no signed URLs, no Filament routing!)
+        return redirect()->route('password.set', [
+            'token' => $token,
+            'email' => $email,
         ]);
-
-        // Redirect to Filament password reset page
-        return redirect('/admin/password-reset/reset?token=' . $token . '&email=' . urlencode($email))
-            ->with('status', 'Please set your new password below.');
     }
 }
