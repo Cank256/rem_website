@@ -86,6 +86,12 @@ class GalleryResource extends Resource
                     ->falseLabel('Inactive only'),
             ])
             ->actions([
+                Tables\Actions\Action::make('manage_images')
+                    ->label('Manage Images')
+                    ->icon('heroicon-o-photo')
+                    ->url(fn (Gallery $record): string => static::getUrl('edit', ['record' => $record->id]))
+                    ->color('info')
+                    ->tooltip('View and manage gallery images'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -100,7 +106,7 @@ class GalleryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ImagesRelationManager::class,
         ];
     }
 

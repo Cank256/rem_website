@@ -27,6 +27,9 @@ class GalleryImageResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Gallery Images';
 
+    // Hide from navigation - images are managed through Gallery resource
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Form $form): Form
     {
         return $form
