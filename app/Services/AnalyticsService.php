@@ -30,6 +30,18 @@ class AnalyticsService
 
         $session = $this->getOrCreateSession($request);
         
+        // Only set user_id if user exists in database
+        $userId = null;
+        if (auth()->check()) {
+            $userId = auth()->id();
+            // Verify user exists in database
+            if (!\App\Models\User::where('id', $userId)->exists()) {
+                $userId = null;
+                // Log out the user since their account doesn't exist
+                auth()->logout();
+            }
+        }
+        
         $pageView = PageView::create([
             'visitor_session_id' => $session->id,
             'url' => $request->fullUrl(),
@@ -41,7 +53,7 @@ class AnalyticsService
             'browser' => $this->agent->browser(),
             'platform' => $this->agent->platform(),
             'ip_address' => $request->ip(),
-            'user_id' => auth()->id(),
+            'user_id' => $userId,
         ]);
 
         // Update session
@@ -63,13 +75,24 @@ class AnalyticsService
         $request = $request ?? request();
         $session = $this->getOrCreateSession($request);
 
+        // Only set user_id if user exists in database
+        $userId = null;
+        if (auth()->check()) {
+            $userId = auth()->id();
+            // Verify user exists in database
+            if (!\App\Models\User::where('id', $userId)->exists()) {
+                $userId = null;
+                auth()->logout();
+            }
+        }
+
         return AnalyticsEvent::create([
             'visitor_session_id' => $session->id,
             'event_name' => $eventName,
             'event_category' => $eventCategory,
             'event_data' => $eventData,
             'url' => $request->fullUrl(),
-            'user_id' => auth()->id(),
+            'user_id' => $userId,
         ]);
     }
 
@@ -85,6 +108,17 @@ class AnalyticsService
         if (!$session) {
             $this->agent->setUserAgent($request->userAgent());
             
+            // Only set user_id if user exists in database
+            $userId = null;
+            if (auth()->check()) {
+                $userId = auth()->id();
+                // Verify user exists in database
+                if (!\App\Models\User::where('id', $userId)->exists()) {
+                    $userId = null;
+                    auth()->logout();
+                }
+            }
+            
             $session = VisitorSession::create([
                 'session_id' => $sessionId,
                 'user_agent' => $request->userAgent(),
@@ -94,7 +128,7 @@ class AnalyticsService
                 'ip_address' => $request->ip(),
                 'first_visit_at' => now(),
                 'last_activity_at' => now(),
-                'user_id' => auth()->id(),
+                'user_id' => $userId,
             ]);
 
             // Set cookie for 30 days
