@@ -15,6 +15,11 @@ class AnalyticsChart extends ChartWidget
 
     public ?string $filter = '7days';
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('view_analytics_dashboard') ?? false;
+    }
+
     protected function getData(): array
     {
         $days = match($this->filter) {

@@ -12,6 +12,11 @@ class AnalyticsOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('view_analytics_dashboard') ?? false;
+    }
+
     protected function getStats(): array
     {
         $today = now()->startOfDay();
