@@ -34,8 +34,8 @@ class ImagesRelationManager extends RelationManager
                         '4:3',
                         '1:1',
                     ])
-                    ->maxSize(5120)
-                    ->helperText('Upload an image (max 5MB). Use the image editor to crop or adjust.'),
+                    ->maxSize(15360)
+                    ->helperText('Upload an image (max 15MB). Use the image editor to crop or adjust.'),
                 Forms\Components\TextInput::make('title')
                     ->maxLength(255)
                     ->helperText('Optional: Add a title for this image'),
@@ -91,7 +91,7 @@ class ImagesRelationManager extends RelationManager
                             ->multiple()
                             ->required()
                             ->directory('gallery-images')
-                            ->maxSize(5120)
+                            ->maxSize(15360)
                             ->maxFiles(50)
                             ->reorderable()
                             ->helperText('Upload multiple images at once (max 50 images, 5MB each). Drag to reorder.'),
