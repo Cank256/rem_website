@@ -139,6 +139,64 @@ class YouTubeService
     }
 
     /**
+     * Check if the channel is currently live and return the active broadcast details.
+     * Returns an array with video_id, title, description, youtube_url on success,
+     * or null if the channel is not live or an error occurs.
+     *
+     * @return array|null
+     */
+    public function getActiveLiveBroadcast(): ?array
+    {
+        if (empty($this->apiKey) || empty($this->channelId)) {
+            Log::warning('YouTube API key or Channel ID not configured');
+            return null;
+        }
+
+        try {
+            $response = Http::get("{$this->baseUrl}/search", [
+                'part'      => 'id,snippet',
+                'channelId' => $this->channelId,
+                'eventType' => 'live',
+                'type'      => 'video',
+                'key'       => $this->apiKey,
+            ]);
+
+            if (!$response->successful()) {
+                Log::error('YouTube live broadcast check failed', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+                return null;
+            }
+
+            $data  = $response->json();
+            $items = $data['items'] ?? [];
+
+            if (empty($items)) {
+                // No active broadcast found
+                return null;
+            }
+
+            $item    = $items[0];
+            $videoId = $item['id']['videoId'];
+            $snippet = $item['snippet'];
+
+            return [
+                'video_id'    => $videoId,
+                'title'       => $snippet['title'],
+                'description' => $snippet['description'] ?? '',
+                'youtube_url' => "https://www.youtube.com/watch?v={$videoId}",
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Error checking YouTube live broadcast', [
+                'message' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
      * Get a single video details
      *
      * @param string $videoId
