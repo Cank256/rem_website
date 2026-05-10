@@ -54,6 +54,7 @@ class GalleryImageResource extends Resource
                     ->image()
                     ->multiple()
                     ->required()
+                    ->disk('public')
                     ->directory('gallery-images')
                     ->imageEditor()
                     ->imageEditorAspectRatios([

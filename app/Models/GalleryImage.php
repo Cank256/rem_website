@@ -16,6 +16,17 @@ class GalleryImage extends Model
         'sort_order',
     ];
 
+    protected $appends = ['image_url'];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (GalleryImage $image) {
+            if ($image->image_path && Storage::disk('public')->exists($image->image_path)) {
+                Storage::disk('public')->delete($image->image_path);
+            }
+        });
+    }
+
     public function gallery(): BelongsTo
     {
         return $this->belongsTo(Gallery::class);
@@ -23,6 +34,6 @@ class GalleryImage extends Model
 
     public function getImageUrlAttribute()
     {
-        return Storage::url($this->image_path);
+        return Storage::disk('public')->url($this->image_path);
     }
 }

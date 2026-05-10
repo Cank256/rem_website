@@ -26,6 +26,7 @@ class ImagesRelationManager extends RelationManager
                     ->label('Image')
                     ->image()
                     ->required()
+                    ->disk('public')
                     ->directory('gallery-images')
                     ->imageEditor()
                     ->imageEditorAspectRatios([
@@ -90,6 +91,7 @@ class ImagesRelationManager extends RelationManager
                             ->image()
                             ->multiple()
                             ->required()
+                            ->disk('public')
                             ->directory('gallery-images')
                             ->maxSize(15360)
                             ->maxFiles(50)
