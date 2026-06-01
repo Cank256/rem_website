@@ -49,6 +49,14 @@ class GalleryImage extends Model
      */
     public function compressImage(): void
     {
+        // Check if Intervention Image is available
+        if (!class_exists(\Intervention\Image\Laravel\Facades\Image::class)) {
+            \Log::warning('Intervention Image not installed. Skipping image compression.', [
+                'image_path' => $this->image_path,
+            ]);
+            return;
+        }
+
         $fullPath = public_path($this->image_path);
         
         if (!file_exists($fullPath)) {
@@ -127,6 +135,11 @@ class GalleryImage extends Model
      */
     private function hasTransparency(string $path): bool
     {
+        // Check if Intervention Image is available
+        if (!class_exists(\Intervention\Image\Laravel\Facades\Image::class)) {
+            return false;
+        }
+        
         try {
             $image = Image::read($path);
             // Check if image has alpha channel
