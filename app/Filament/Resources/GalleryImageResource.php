@@ -62,10 +62,10 @@ class GalleryImageResource extends Resource
                         '4:3',
                         '1:1',
                     ])
-                    ->maxSize(20480)
+                    ->maxSize(51200)
                     ->maxFiles(20)
                     ->reorderable()
-                    ->helperText('Upload multiple images at once (max 20 images, 20MB each). Drag to reorder.'),
+                    ->helperText('Upload multiple images at once (max 20 images, 50MB each). Images will be automatically compressed.'),
                 Forms\Components\TextInput::make('title')
                     ->maxLength(255)
                     ->helperText('Optional: Add a title (applies to first image only when uploading multiple)'),
