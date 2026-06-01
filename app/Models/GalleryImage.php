@@ -21,8 +21,8 @@ class GalleryImage extends Model
     protected static function booted(): void
     {
         static::deleting(function (GalleryImage $image) {
-            if ($image->image_path && Storage::disk('public')->exists($image->image_path)) {
-                Storage::disk('public')->delete($image->image_path);
+            if ($image->image_path && Storage::exists($image->image_path)) {
+                Storage::delete($image->image_path);
             }
         });
     }
@@ -34,6 +34,6 @@ class GalleryImage extends Model
 
     public function getImageUrlAttribute()
     {
-        return Storage::disk('public')->url($this->image_path);
+        return asset($this->image_path);
     }
 }
