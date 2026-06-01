@@ -58,12 +58,13 @@ echo ""
 
 echo "🧪 Step 5: Testing Image Compression"
 echo "--------------------------------------------"
-php artisan tinker --execute="
+php -r "
+require 'vendor/autoload.php';
 if (class_exists('Intervention\Image\Laravel\Facades\Image')) {
-    echo '✅ Intervention Image is available\n';
+    echo '✅ Intervention Image is available' . PHP_EOL;
 } else {
-    echo '❌ Intervention Image not found\n';
-    echo 'Run: composer require intervention/image\n';
+    echo '❌ Intervention Image not found' . PHP_EOL;
+    echo 'Run: composer require intervention/image' . PHP_EOL;
 }
 "
 echo ""
