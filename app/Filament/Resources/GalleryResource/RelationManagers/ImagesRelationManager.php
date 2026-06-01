@@ -35,8 +35,8 @@ class ImagesRelationManager extends RelationManager
                         '4:3',
                         '1:1',
                     ])
-                    ->maxSize(15360)
-                    ->helperText('Upload an image (max 15MB). Use the image editor to crop or adjust.'),
+                    ->maxSize(2048)
+                    ->helperText('Upload an image (max 2MB). Use the image editor to crop or adjust.'),
                 Forms\Components\TextInput::make('title')
                     ->maxLength(255)
                     ->helperText('Optional: Add a title for this image'),
@@ -93,21 +93,24 @@ class ImagesRelationManager extends RelationManager
                             ->required()
                             ->disk('public')
                             ->directory('gallery-images')
-                            ->maxSize(15360)
+                            ->maxSize(2048)
                             ->maxFiles(50)
                             ->reorderable()
-                            ->helperText('Upload multiple images at once (max 50 images, 5MB each). Drag to reorder.'),
+                            ->preserveFilenames()
+                            ->helperText('Upload multiple images at once (max 50 images, 2MB each). Drag to reorder.'),
                     ])
                     ->action(function (array $data, RelationManager $livewire): void {
                         $gallery = $livewire->getOwnerRecord();
                         $sortOrder = $gallery->images()->max('sort_order') ?? 0;
                         
-                        foreach ($data['images'] as $imagePath) {
-                            $sortOrder++;
-                            $gallery->images()->create([
-                                'image_path' => $imagePath,
-                                'sort_order' => $sortOrder,
-                            ]);
+                        if (isset($data['images']) && is_array($data['images'])) {
+                            foreach ($data['images'] as $imagePath) {
+                                $sortOrder++;
+                                $gallery->images()->create([
+                                    'image_path' => $imagePath,
+                                    'sort_order' => $sortOrder,
+                                ]);
+                            }
                         }
                     })
                     ->successNotificationTitle('Images uploaded successfully')
