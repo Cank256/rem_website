@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+# =============================================================================
+# Church Website — Unified CLI Tool
+# Convenient wrapper around all utility scripts
+# Usage: ./scripts/church <command> [options]
+# =============================================================================
+
+set -e
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+# Get script directory
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Helpers
+info()    { echo -e "${BLUE}${BOLD}[INFO]${NC}  $1"; }
+success() { echo -e "${GREEN}${BOLD}[OK]${NC}    $1"; }
+warn()    { echo -e "${YELLOW}${BOLD}[WARN]${NC}  $1"; }
+error()   { echo -e "${RED}${BOLD}[ERROR]${NC} $1"; exit 1; }
+
+# Banner
+show_banner() {
+    echo ""
+    echo -e "${CYAN}${BOLD}╔════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}${BOLD}║    Church Website — CLI Tool          ║${NC}"
+    echo -e "${CYAN}${BOLD}╚════════════════════════════════════════╝${NC}"
+    echo ""
+}
+
+# Help
+show_help() {
+    show_banner
+    echo -e "${BOLD}USAGE:${NC}"
+    echo "  ./scripts/church <command> [options]"
+    echo ""
+    echo -e "${BOLD}SETUP COMMANDS:${NC}"
+    echo "  setup [--fresh|--prod|--no-npm]  Setup project (installs deps, runs migrations)"
+    echo "  admin:create                       Create new admin user (interactive)"
+    echo "  admin:update                       Update admin password"
+    echo "  admin:list                         List all users"
+    echo ""
+    echo -e "${BOLD}MAINTENANCE COMMANDS:${NC}"
+    echo "  fix:permissions [--create-htaccess]  Fix gallery image permissions"
+    echo "  reset:analytics                      Reset analytics migrations"
+    echo ""
+    echo -e "${BOLD}DEPLOYMENT COMMANDS:${NC}"
+    echo "  deploy:compression                   Deploy image compression feature"
+    echo ""
+    echo -e "${BOLD}EXAMPLES:${NC}"
+    echo "  ./scripts/church setup              # Fresh local setup"
+    echo "  ./scripts/church setup --prod       # Production setup"
+    echo "  ./scripts/church admin:create       # Create admin"
+    echo "  ./scripts/church fix:permissions    # Fix image permissions"
+    echo ""
+    echo -e "${BOLD}OPTIONS:${NC}"
+    echo "  -h, --help    Show this help message"
+    echo ""
+}
+
+# Check we're in project root
+cd "$PROJECT_ROOT" || error "Could not navigate to project root"
+
+# Parse command
+COMMAND="${1:-help}"
+shift || true
+
+case "$COMMAND" in
+    setup)
+        info "Running project setup..."
+        bash "$SCRIPT_DIR/setup/setup.sh" "$@"
+        ;;
+        
+    admin:create)
+        info "Creating admin user..."
+        bash "$SCRIPT_DIR/setup/create-admin.sh" "$@"
+        ;;
+        
+    admin:update)
+        info "Updating admin password..."
+        bash "$SCRIPT_DIR/setup/create-admin.sh" --update "$@"
+        ;;
+        
+    admin:list)
+        info "Listing users..."
+        bash "$SCRIPT_DIR/setup/create-admin.sh" --list "$@"
+        ;;
+        
+    fix:permissions)
+        info "Fixing permissions..."
+        bash "$SCRIPT_DIR/maintenance/fix-permissions.sh" "$@"
+        ;;
+        
+    reset:analytics)
+        info "Resetting analytics migrations..."
+        bash "$SCRIPT_DIR/maintenance/reset-analytics-migrations.sh" "$@"
+        ;;
+        
+    deploy:compression)
+        info "Deploying compression feature..."
+        bash "$SCRIPT_DIR/deployment/deploy-compression.sh" "$@"
+        ;;
+        
+    help|-h|--help)
+        show_help
+        ;;
+        
+    *)
+        warn "Unknown command: $COMMAND"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac
