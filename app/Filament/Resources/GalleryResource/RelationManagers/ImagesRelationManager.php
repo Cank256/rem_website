@@ -35,8 +35,8 @@ class ImagesRelationManager extends RelationManager
                         '4:3',
                         '1:1',
                     ])
-                    ->maxSize(2048)
-                    ->helperText('Upload an image (max 2MB). Use the image editor to crop or adjust.'),
+                    ->maxSize(20480)
+                    ->helperText('Upload an image (max 20MB). Use the image editor to crop or adjust.'),
                 Forms\Components\TextInput::make('title')
                     ->maxLength(255)
                     ->helperText('Optional: Add a title for this image'),
@@ -93,11 +93,11 @@ class ImagesRelationManager extends RelationManager
                             ->required()
                             ->disk('public')
                             ->directory('gallery-images')
-                            ->maxSize(2048)
+                            ->maxSize(20480)
                             ->maxFiles(50)
                             ->reorderable()
                             ->preserveFilenames()
-                            ->helperText('Upload multiple images at once (max 50 images, 2MB each). Drag to reorder.'),
+                            ->helperText('Upload multiple images at once (max 50 images, 20MB each). Drag to reorder.'),
                     ])
                     ->action(function (array $data, RelationManager $livewire): void {
                         $gallery = $livewire->getOwnerRecord();
