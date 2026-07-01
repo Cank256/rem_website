@@ -141,4 +141,5 @@ Options -Indexes
     php_value post_max_size 64M
     php_value max_execution_time 120
     php_value memory_limit 256M
+    php_flag extension intl On
 </IfModule>

@@ -5,6 +5,11 @@
 # project root instead of public/. Ideally, fix the document root instead.
 # =============================================================================
 
+# Enable PHP extensions (cPanel shared hosting)
+<IfModule mod_php.c>
+    php_flag extension intl On
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
