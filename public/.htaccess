@@ -134,12 +134,21 @@ Options -Indexes
 </IfModule>
 
 # ── PHP settings (shared hosting) ─────────────────────────────────────────────
+# For mod_php (Apache module)
 <IfModule mod_php.c>
     php_flag display_errors Off
     php_flag log_errors On
-    php_value upload_max_filesize 64M
-    php_value post_max_size 64M
-    php_value max_execution_time 120
+    php_value upload_max_filesize 20M
+    php_value post_max_size 25M
+    php_value max_execution_time 300
+    php_value max_input_time 300
     php_value memory_limit 256M
+    php_value max_file_uploads 50
     php_flag extension intl On
+</IfModule>
+
+# For PHP-FPM / FastCGI (most modern shared hosting)
+# These settings are also in .user.ini as a fallback
+<IfModule mod_fcgid.c>
+    FcgidMaxRequestLen 26214400
 </IfModule>
